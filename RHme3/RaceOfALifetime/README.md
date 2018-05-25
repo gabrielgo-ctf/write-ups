@@ -101,7 +101,7 @@ go(51.99, 4.38, 49.00, 2.54, 4);                  //From Riscure Head Office to 
 go(49.00, 2.54, 31.14, 121.80, 20);               //From Pris Airport to Shanghai Airport in 20 hours (PLANE)
 go(31.14, 121.80, dp[0], dp[1], 12);              //From Shanghai Airport to destination in 12 hours (CAR)
 go(dp[0], dp[1], 31.14, 121.80, 12);              //From destination to Shanghai Airport in 12 hours (CAR)
-go(31.14, 121.80, 37.62, 360 - 122.37, 20);	      //From Shanghai Airport to San Francisco Airport in 20 hours (PLANE)
+go(31.14, 121.80, 37.62, 360 - 122.37, 20);       //From Shanghai Airport to San Francisco Airport in 20 hours (PLANE)
 go(37.62, 360 - 122.37, 37.79, 360 - 122.40, 1);  //From San Francisco Airport to Riscure America in 1 hour (CAR)
 go(37.79, 360 - 122.40, 37.62, 360 - 122.37, 1);  //From Riscure America to San Francisco Airport in 1 hour (CAR)
 go(37.62, - 122.37, 49.00, 2.54, 16);             //From San Francisco Airport to Paris Airport 16 hours (PLANE)
