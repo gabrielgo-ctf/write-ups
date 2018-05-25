@@ -21,11 +21,12 @@ You can take a flight if you need one at the airports of Paris (CDG), Shanghai (
 
 4. Argg! It is too far... time to do something automatic, because each mistake forces us to restart the challenge again, and doing it manually we have to spent a lot of time calculating intermediate points and is very easy have a mistake.
 
-5. For future use, we can search in google maps where are the airports to obtain their coordinates
+5. For future use, we can search in google maps where are the airports and Riscure America to obtain their coordinates
 ```
 Paris (CDG): 49.009722, 2.547778
 Shanghai (PVG): 31.143333, 121.805278
 San Francisco (SFO): 37.618889, -122.375
+Riscure America: 37.7932335, -122.4048855
 ````
 
 Here is the code I prepared quickly to go from one point to another in a number of steps. I did it in C# because I am comfortable with this language.
@@ -89,12 +90,12 @@ Double[] getDestination(string text)
 send("p\n");
 
 String message  = getOutput();
-Double[] sp = getOrigen(message);
+Double[] sp = getStartPosition(message);
 
-go(sp[0], sp[1], 51.99, 4.38, 40);                 //From start point to Riscure Head Office in 40 hours (CAR)
+go(sp[0], sp[1], 51.99, 4.38, 40);                //From start point to Riscure Head Office in 40 hours (CAR)
 
 message = getOutput();
-Double[] dp = getDestino(message);
+Double[] dp = getDestination(message);
 
 go(51.99, 4.38, 49.00, 2.54, 4);                  //From Riscure Head Office to Pris Airport in 4 hours (CAR)
 go(49.00, 2.54, 31.14, 121.80, 20);               //From Pris Airport to Shanghai Airport in 20 hours (PLANE)
