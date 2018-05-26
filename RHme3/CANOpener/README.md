@@ -10,11 +10,11 @@ Challenge developed by Argus Cyber Security.
 ## Write-up
 To resolve this CAN challenge I used the setup described [here](CAN_Configuration.md)
 
-1 - First of all we can read the line CAN L with a logic Analyzer to determine the speed used. We will see that the smaller time bit is 20\mus, so the speed of CAN BUS is 50Kbps
-[img1](logicAnalyzer1.jpg)  
-[img2](logicAnalyzer1_zoom.jpg)
+1. First of all we can read the line CAN L with a logic Analyzer to determine the speed used. We will see that the smaller time bit is 20\mus, so the speed of CAN BUS is 50Kbps  
+![img1](logicAnalyzer1.jpg)  
+![img2](logicAnalyzer1_zoom.jpg)
 
-2 - We configure the Arduino to use this speed and read the packets in the bus. Quickly we will see packets for 5 IDs
+2. We configure the Arduino to use this speed and read the packets in the bus. Quickly we will see packets for 5 IDs
 ```
 Standard ID: 0x023       DLC: 5  Data: 0x00 0x20 0x07 0xBC 0x10
 Standard ID: 0x10C       DLC: 8  Data: 0x00 0x4A 0x01 0x22 0x00 0x49 0x00 0x4A
