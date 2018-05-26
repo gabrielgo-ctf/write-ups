@@ -53,26 +53,26 @@ Parities line 792 (Sample 791):
 ````
 
 6. Continuing the reverse we will see we need to send a 0xFA length password to get the flat. This password is generated in memory and is diferent for each sample.
-[Here](1000_Passwords.txt) is a file with the password of the 1000 samples (1000_Passwords.txt). I generated this using the same strategy of step 4.  
-[Here](GeneratingPassword.md) is the reverse code that generates the password with the data of Sample 0
+   [Here](1000_Passwords.txt) is a file with the password of the 1000 samples (1000_Passwords.txt). I generated this using the same strategy of step 4.  
+   [Here](GeneratingPassword.md) is the reverse code that generates the password with the data of Sample 0
 
 7. The password of sample 791 is this
 ```
 0F79D2CC6501B51A4F3B343DEEF9AC52B5F3726C8EAF947CAC81778B2D56C1CA76E9DB6D66EEA8604C9E80913E709CA2BC1AB8802890B96EEAD18DD3D1656185F37213BD892A90A5A25889580EC93BA8A44C1E6691C590ADB28CA10EB029905B01DE7374551B33E9D12A1DCFC3770D6EDC5C72013328FB7DD5E3ECA91C30690EFD772969787E59BDB6FB595FC85486B4242F3DB97635D6CD2A8458DE92B98D6259B1F566F7E0830F1F34BD4D3234E37297C868C1F07B7DB036D513F9A0643F401D9F713FD583ADD677FD48171BB3F5FC55F4E4E64C290C5CD6A9AC72A9D245DD4E90D886F927FB366836AF784F138E255321ACE60BA1B43ACB61
 ```
-but the way to send this is very strange. First of all we have to send "\*". After that, it doesn't store the bytes sent... the board counts the number of data received and store this counter when there is a long time without receive more bytes. Finally we have to write another "\*". Example:
-- send "\*"
-- send 0x0F bytes (any values)
-- wait
-- send 0x79 bytes (any values)
-- wait
-...
-- wait
-- send 0x61 bytes (any values) 
-- wait
-- send "\*" 
+   but the way to send this is very strange. First of all we have to send "\*". After that, it doesn't store the bytes sent... the board counts the number of data received and store this counter when there is a long time without receive more bytes. Finally we have to write another "\*". Example:
+   - send "\*"
+   - send 0x0F bytes (any values)
+   - wait
+   - send 0x79 bytes (any values)
+   - wait
+   - ...
+   - wait
+   - send 0x61 bytes (any values) 
+   - wait
+   - send "\*" 
 
-Here is the code I prepared to send the password (after some tests I determined that a good time of waits was 6 seconds, with smaller values sometimes I had some errors in the values I wanted to write)
+   Here is the code I prepared to send the password (after some tests I determined that a good time of waits was 6 seconds, with smaller values sometimes I had some errors in the values I wanted to write)
 ```cs
 private void sendPassword(byte[] pwd)
 {
