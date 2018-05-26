@@ -2,15 +2,13 @@
 An attacker managed to hack our CI server and sign+encrypt his malicious code in a ECU firmware, that is now running in millions of cars and doing Chaos knows what. To stop the attackers, we must know what the malicious code is doing. We have a history of all binaries signed by the server on the day of the hack, and a device running the attacker's firmware. Help us find which sample was provided by the attacker and get access to its management interface.
 
 ## Write-up
-This challenge
-Sample0
+This challenge has 1000 hex files and we don't know which is the loaded in the board. We start to reverse the sample 0...
 
-
-1. In the reversing we will find the function at 5B29, this has two possible commands ("test" and "risc") and it seems to write data in the DACB. So we check with the oscilloscope pin D7 of the board and we will find that it writes some kind of pulses. Examples
+1. In the reversing we will find the function at 5B29, this has two possible commands ("test" and "risc") and it seems to write data in the DACB. So we check pin D7 of the board with the oscilloscope and we  find that it writes some kind of pulses. Examples  
 ![test](1.jpg)
 ![risc](8.jpg)
 
-2. If we repeat the commands, we will see that the output is always the same, unless 10 variable pulses. Sometimes they have a higher voltage and sometimes a lower voltage. Here are 8 diferent captures [1.jpg](1.jpg), [2.jpg](2.jpg), [3.jpg](3.jpg), [4.jpg](4.jpg), [5.jpg](5.jpg), [6.jpg](6.jpg), [7.jpg](7.jpg), [8.jpg](8.jpg)
+2. If we repeat the commands, we will see that the output is always the same, except 10 variable pulses. Sometimes they have a higher voltage and sometimes a lower voltage. Here are 8 diferent captures [1.jpg](1.jpg), [2.jpg](2.jpg), [3.jpg](3.jpg), [4.jpg](4.jpg), [5.jpg](5.jpg), [6.jpg](6.jpg), [7.jpg](7.jpg), [8.jpg](8.jpg)
 
 3. If we continue the reversing we will see that function 55BD generates an array of 0x64 bytes, and this array is used to modify the voltage of some pulses... It modifies 10 pulses according to the parity of 10 consecutive bytes inside the array. The offset used to get the 10 bytes is random every execution. This is the reverse code that modifies each pulse voltage
 ```cs
@@ -32,7 +30,7 @@ else
    - Execute until the end
    - Dump memory and write to a file
 
-[Here](1000_DACBData.txt) is the file with the data of the 1000 samples (1000_DACBData.txt). Each line is the array of one sample.
+[Here](1000_DACBData.txt) is the file with the data of the 1000 samples (1000_DACBData.txt). Each line is the array of one sample.  
 [Here](1000_DACBData_parities.txt) is the same file, but storing only the parity of bytes (00=even 01=ood). (1000_DACBData_parities.txt)
 
 5. With the oscilloscope traces and the arrays calculated, we can easily determine which is the correct sample. We calculate the real parities from the traces and search these sequences in 1000_DACBData_parities.txt. We will find that only line 792 (Sample 791) contains all the parity sequences.
@@ -55,15 +53,15 @@ Parities line 792 (Sample 791):
 ````
 
 6. Continuing the reverse we will see we need to send a 0xFA length password to get the flat. This password is generated in memory and is diferent for each sample.
-[Here](1000_Passwords.txt) is a file with the password of the 1000 samples (1000_Passwords.txt). I generated this using the same strategy of step 4.
+[Here](1000_Passwords.txt) is a file with the password of the 1000 samples (1000_Passwords.txt). I generated this using the same strategy of step 4.  
 [Here](GeneratingPassword.md) is the reverse code that generates the password with the data of Sample 0
 
 7. The password of sample 791 is this
 ```
 0F79D2CC6501B51A4F3B343DEEF9AC52B5F3726C8EAF947CAC81778B2D56C1CA76E9DB6D66EEA8604C9E80913E709CA2BC1AB8802890B96EEAD18DD3D1656185F37213BD892A90A5A25889580EC93BA8A44C1E6691C590ADB28CA10EB029905B01DE7374551B33E9D12A1DCFC3770D6EDC5C72013328FB7DD5E3ECA91C30690EFD772969787E59BDB6FB595FC85486B4242F3DB97635D6CD2A8458DE92B98D6259B1F566F7E0830F1F34BD4D3234E37297C868C1F07B7DB036D513F9A0643F401D9F713FD583ADD677FD48171BB3F5FC55F4E4E64C290C5CD6A9AC72A9D245DD4E90D886F927FB366836AF784F138E255321ACE60BA1B43ACB61
 ```
-but the way to send this is very strange. First of all we have to send "*". After that, it doesn't store the bytes sent... the board counts the number of data received and store this counter when there is a long time without receive more bytes. Finally we have to write another "*". Example:
-- send "*"
+but the way to send this is very strange. First of all we have to send "\*". After that, it doesn't store the bytes sent... the board counts the number of data received and store this counter when there is a long time without receive more bytes. Finally we have to write another "\*". Example:
+- send "\*"
 - send 0x0F bytes (any values)
 - wait
 - send 0x79 bytes (any values)
@@ -72,9 +70,9 @@ but the way to send this is very strange. First of all we have to send "*". Afte
 - wait
 - send 0x61 bytes (any values) 
 - wait
-- send "*" 
+- send "\*" 
 
-Here is the code I prepared to send the password (after some tests I determined that a good time of waits was 6 seconds, with little values sometimes I had some errors in the values I wanted to write)
+Here is the code I prepared to send the password (after some tests I determined that a good time of waits was 6 seconds, with smaller values sometimes I had some errors in the values I wanted to write)
 ```cs
 private void sendPassword(byte[] pwd)
 {
