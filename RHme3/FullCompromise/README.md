@@ -30,8 +30,8 @@ else
    - Execute until the end
    - Dump memory and write to a file
 
-[Here](1000_DACBData.txt) is the file with the data of the 1000 samples (1000_DACBData.txt). Each line is the array of one sample.  
-[Here](1000_DACBData_parities.txt) is the same file, but storing only the parity of bytes (00=even 01=ood). (1000_DACBData_parities.txt)
+   [Here](1000_DACBData.txt) is the file with the data of the 1000 samples (1000_DACBData.txt). Each line is the array of one sample.  
+   [Here](1000_DACBData_parities.txt) is the same file, but storing only the parity of bytes (00=even 01=ood). (1000_DACBData_parities.txt)
 
 5. With the oscilloscope traces and the arrays calculated, we can easily determine which is the correct sample. We calculate the real parities from the traces and search these sequences in 1000_DACBData_parities.txt. We will find that only line 792 (Sample 791) contains all the parity sequences.
 ```
@@ -53,6 +53,7 @@ Parities line 792 (Sample 791):
 ````
 
 6. Continuing the reverse we will see we need to send a 0xFA length password to get the flat. This password is generated in memory and is diferent for each sample.
+
    [Here](1000_Passwords.txt) is a file with the password of the 1000 samples (1000_Passwords.txt). I generated this using the same strategy of step 4.  
    [Here](GeneratingPassword.md) is the reverse code that generates the password with the data of Sample 0
 
