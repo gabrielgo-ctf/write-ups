@@ -10,7 +10,7 @@ Challenge developed by Argus Cyber Security.
 ## Write-up
 To resolve this CAN challenge I used the setup described [here](CAN_Configuration.md)
 
-1. First of all we can read the line CAN L with a logic Analyzer to determine the speed used. We will see that the smaller time bit is 20\mus, so the speed of CAN BUS is 50Kbps  
+1. First of all we can read the line CAN L with a logic Analyzer to determine the speed used. We will see that the smaller time bit is 20us, so the speed of CAN BUS is 50Kbps  
 ![img1](logicAnalyzer1.jpg)  
 ![img2](logicAnalyzer1_zoom.jpg)
 
