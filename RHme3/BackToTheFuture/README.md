@@ -23,7 +23,7 @@ LEN: 5
 10 = ?? (or 20)
 ```
 ```
-ID: 0x19A -> The 10/20 coincide con el enviado en el 23
+ID: 0x19A
 LEN: 2
 7110 = Indicator or (7120) (the 10 or 20 matches with the data of ID 23 packet)
 ```
@@ -54,7 +54,7 @@ The packets with ID 23 are who have the speed, but sending to the CAN bus packet
 
 I was some time trying to flood the CAN BUS with my packets, forcing errors in the CAN BUS... all with the purpose of remove or invalidate packets with other speeds. But it seems not work, even when dashboard shows a constant speed of 88mph.
 
-To remove the original packets we need to cut the lines that join the two MCP of the board. I took long time to see it because in the schematics these lines don't exists.
+To remove the original packets we need to cut the lines that join the two MCP of the board. I took long time to see it because in the schematics these lines don't exists.  
 ![riscurino.jpg](riscurino.jpg)
 
 After cut the lines and connecting our Arduino to each of the CAN buses, we can see
@@ -69,7 +69,7 @@ FLAG: 60f46cb7caa2b3e7408400747420f5b0
 
 [Here](BackToTheFuture.ino) is the Arduino script I used.
 
-I used two CAN Shields with the Arduino to connect the both CAN BUS at the same time, because when one is open the ECU stopped to work after few packets.  The connections was
+I used two CAN Shields with the Arduino to connect the both CAN BUS at the same time, because when one is open the ECU stopped to work after few packets.  The connections are
 ```
 CS CAN0 = PIN 10 of Arduino
 INT CAN0 = PIN 2 of Arduino
