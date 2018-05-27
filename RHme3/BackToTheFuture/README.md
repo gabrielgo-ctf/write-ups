@@ -73,7 +73,7 @@ I used two CAN Shields with the Arduino to connect the both CAN BUS at the same 
 ```
 CS CAN0 = PIN 10 of Arduino
 INT CAN0 = PIN 2 of Arduino
-CS CAN1 = PIN 1 of Arduino
+CS CAN1 = PIN 9 of Arduino
 INT of CAN1 = PIN 4 of Arduino
 SCK, MISO, MOSI, VCC, GND common to both CAN = PINs 13, 12, 11 VCC and GND of Arduino
 ```
