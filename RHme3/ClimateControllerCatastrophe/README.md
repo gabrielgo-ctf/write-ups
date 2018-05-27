@@ -253,7 +253,7 @@ CAN msg received -> ID: 1FF   LEN: 4   DATA: 253C3E49
 And Serial port will receive **Message received, sharing climate control settings.**. The data is 640D255032 D05D053E0ABE5FD3B050679AD2844FFE1338A3202F220CAC266EB963F53C3E49 (HMAC is correct)
 
 
-### Others 1
+### Others 3
 NVM data loaded during initialization
 ```
 1000: xx
