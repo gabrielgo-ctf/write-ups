@@ -8,10 +8,7 @@ Of course just pairing the dashboard computer isn't cool enough, try to smash th
 In addition to the attached challenge and reversing binaries, you're provided a special "challenge" which you can flash to wipe the EEPROM of your dashboard computer.
 
 ## Write-up
-
-
-
-When I resolved this challenge I didn't know the OBD and UDS protocols so I reversed the code of all commands to know how they worked. Later, when I resolved Auto-PSY, I read about them and I saw we had three UDS commands in this challenge.
+It was an interesting challenge, it was the challenge with more points and it mixed several disciplines: reversing, exploitation, can bus and encryption algorithms (I like the encryptions :smile:). When I resolved this challenge I didn't know the OBD and UDS protocols so I reversed the code of all commands to know how they worked. Later, when I resolved Auto-PSY, I read about them and I saw we had three UDS commands in this challenge.
 
 ### Reversing
  - There are two CAN IDs implemented in the challenge: 0665 and 0776 
@@ -141,17 +138,19 @@ ROM:63DD                 pop     r29
 ROM:63DE                 pop     r28
 ROM:63DF                 ret
 ```
-- We already have all the pieces, we only need to put all together. So, if we can write in the stack this code then we will get the flag:  
-  yyyy 008BB1 FF xxxx 004ED9 1272  
-    yyyy = pointer to the address of "B1" (just before the FF) to be loaded into r28 and r29 by the POP instructions before the ret  
-    xxxx = pointer to the address of "49" (just before the 1272) to be loaded into r28 and r29 by the POP instructions before the ret  
-  1. the two pop before the ret of function 6297 will load r28:r29=yyyy (pointer to stack just before the FF value)
-  2. return to 008BB1
-  3. the opcode at 8BB1 will load r24=FF from stack, after will store it into $2FE0
-  4. then will pop the FF and load r28:r29=xxxx (pointer to stack just before the values 1272) 
-  5. return to 004ED9
-  6. the opcodes at 4EE1 and 4EE2 will load r24=12 and r25=72 from stack
-  7. Finally it will print the stack
+- We already have all the pieces, we only need to put all together. So, if we can write in the stack this code then we will get the flag:
+```
+yyyy 008BB1 FF xxxx 004ED9 1272  
+  yyyy = pointer to the address of "B1" (just before the FF) to be loaded into r28 and r29 by the POP instructions before the ret  
+  xxxx = pointer to the address of "49" (just before the 1272) to be loaded into r28 and r29 by the POP instructions before the ret  
+```
+1. the two pop before the ret of function 6297 will load r28:r29=yyyy (pointer to stack just before the FF value)
+2. return to 008BB1
+3. the opcode at 8BB1 will load r24=FF from stack, after will store it into $2FE0
+4. then will pop the FF and load r28:r29=xxxx (pointer to stack just before the values 1272) 
+5. return to 004ED9
+6. the opcodes at 4EE1 and 4EE2 will load r24=12 and r25=72 from stack
+7. Finally it will print the stack
 	
 - These are the packets sent to get the flag:
   - 0665 0002 2701                                                          -> Login Step 1 - Get Challenge
