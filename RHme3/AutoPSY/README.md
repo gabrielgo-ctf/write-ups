@@ -148,7 +148,7 @@ Some valid challenge-responses
 	case 0x28CD: key = 0x4632;
 	case 0xC342: key = 0x1234;
 ```
-- After a valid login, we can try to read the service A0 and we will obtain...
+- After a valid login, we can try to read the service A0 of ID 07D3 and we will obtain...
 ```
 <- ID: 0x7DB       DLC: 8  Data: 0x10 0x29 0xE0 0x00 0x46 0x4C 0x41 0x47
 <- ID: 0x7DB       DLC: 8  Data: 0x21 0x3A 0x00 0x06 0x00 0x00 0x00 0x00
@@ -159,13 +159,13 @@ Some valid challenge-responses
 	
 E000 464C41473A 0006 0000 0000 0010 3205 0000000000000000000000000000000000000000000000 (FLAG:)
 ```
-It should be the flag, but it seems garbage... Testing these values in challenge website we will confirm that it was invalid.
+- It should be the flag, but it seems garbage... Testing these values in challenge website we will confirm that it was invalid.
 
-- To try to see what happen I downloaded the firmware using the services 35/36/37 and started to reverse. Here are the dumps of ID [07E0](Dump7E0_buggy.txt) and 07D3[07D3](Dump7D3_buggy.txt). While I was reversing the firmware the challenge was disabled because it has some bug and I stopped and waited (for long time...) to the fixed version. To avoid the bruteforce in the login for future tests, I reversed the function to get valid responses.
+- To try to see what happen I downloaded the firmware using the services 35/36/37 and started to reverse. Here are the dumps of ID [07E0](Dump7E0_buggy.txt) and [07D3](Dump7D3_buggy.txt). While I was reversing the firmware the challenge was disabled because it has some bug and I stopped and waited (for long time...) to the fixed version. To avoid the bruteforce in the login for future tests, I reversed the function to get valid responses.
 ```cs
-int genPass(int seed)
+int genPass(int challenge)
 {
-    byte seedPass[] = { 0x45, 0x71, 0x3D, 0x8B, 0x4F, (byte)(seed >> 8), (byte)(seed) };
+    byte seedPass[] = { 0x45, 0x71, 0x3D, 0x8B, 0x4F, (byte)(challenge >> 8), (byte)(challenge) };
     byte r24 = 0, r25 = 0;
     for (int i = 0; i < 7; i++)
     {
@@ -197,10 +197,71 @@ int genPass(int seed)
         r25 ^= r0;
         r24 ^= r22;
     }
-    if ((byte)(seed >> 8) == (byte)seed) return (r25 << 8) + r25;
+    if ((byte)(challenge >> 8) == (byte)challenge) return (r25 << 8) + r25;
     else return (r25 << 8) + (r25 ^ 1);
 }
 ```
 
 ### Second version (OK)
+When the second version was published I thought that I will need only few seconds to get the flag repeating the same steps of first version. I was wrong... this new version hadn't enabled the ID 7D3!!!. IDs 7E0 and 7E5 seems to be equal to first version. 
+- We have to dump again the ID 7E0 and reverse it to see what is happening... [here](Dump7E0.txt) is the dump.
+- The code to set filter for ID 07D3 only will be executed if the value at address $BFE0 is not 00
+```
+ROM:0229                 ldi     r30, 0xE0
+ROM:022A                 ldi     r31, 0xBF
+ROM:022B                 lpm     r30, Z
+ROM:022C                 tst     r30
+ROM:022D                 breq    loc_239         ; test BFE0 == 0
+ROM:022E                 ser     r18
+ROM:022F                 ldi     r19, 0xF
+ROM:0230                 ldi     r20, 0xD3       ; 07D3
+ROM:0231                 ldi     r21, 7
+ROM:0232                 ldi     r22, 3
+ROM:0233                 lds     r24, 0x200B
+ROM:0235                 lds     r25, 0x200C
+ROM:0237                 call    WriteRegistersSPI
+ROM:0239 loc_239:
+```
+- If we look the SPI commands with a logic analyzer we can confirm this filter is not set.
+- Analyzing the code I didn't find a way to add the filter to 07D3, no exploits, no cmds to enable it, neither trying to reset the MCPs with service 11.
+
+- At this point I asked to an admin if it was part of the challenge or it was another bug. He didn't answer so I had to continue by myself...
+
+- I had two ideas:
+  - Try to corrupt some SPI packet wile AT is initializing the MCPs (After a few test I hadn't success)
+  - Inject the packets to init the filter 07D3 in the SPI lines. The SPI commands to add this filter should be
+```
+05 0F E080
+02 10 FA600000
+02 24 FFE00000
+05 0F E000
+```
+- Looking the schematics and following the SPI lines we have this:
+```
+MCP.........AT......PIN Board
+28 SO   -  AT16  -  no
+27 SI   -  AT15  -  D10
+26 SCK  -  AT17  -  no
+1  CS   -  AT14  -  D9
+```
+- I connected the Arduino to D10(SI), D9(CS) and I touched with another wire the AT pin 17 (SCK). With the arduino I inserted the SPI messages and I enabled ID 07D3. After this we can do login and read the service A0
+```
+ID: 0x7DB  DLC: 8  Data: 10 23 E0 00 46 4C 41 47
+ID: 0x7DB  DLC: 8  Data: 21 3A 00 26 5F 25 5E 50
+ID: 0x7DB  DLC: 8  Data: 22 72 30 67 6E 6F 35 69
+ID: 0x7DB  DLC: 8  Data: 23 73 20 3D 20 21 31 75
+ID: 0x7DB  DLC: 8  Data: 24 70 75 35 5E 23 3A 33
+ID: 0x7DB  DLC: 8  Data: 25 00 00 00 00 00 00 00
+```
+- Flag:
+```
+&_%^Pr0gno5is = !1upu5^#:3
+```
+- Another way to see the flag is dump the data of 7D3 with services 35/36/37 from 8000 to BFFF. [Here](Dump7D3.txt) is the dump of this ID.
+
+### Scripts
+- Script to scan active services [here](AutoPSY_scan.ino)
+- Script to login and dump [here](AutoPSY_loginDump.ino)
+- Script to enable7D3, login and read flag [here](AutoPSY_readFlag.ino)
+  
 
