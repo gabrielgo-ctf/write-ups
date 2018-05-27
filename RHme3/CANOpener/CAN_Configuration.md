@@ -18,7 +18,7 @@ VCC    ---- VCC
 
 The connections between TJA1050 and challenge board are:
 ```
-TJA1050  Arduino
+TJA1050  Board
 H   ---- CAN H  
 L   ---- CAN L
 ```
