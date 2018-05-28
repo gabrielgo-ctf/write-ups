@@ -95,7 +95,7 @@ GND(Arduino) - GND(board)
 
 - The 43 bits "fixed" to zero, don't give us a free space of 128 bits to write the response of the challenge. So I thought that we should write the response at the position where the challenge is read (Later we will see that it is incorrect, they fixed it and removed 7 of these bits, giving us other valid space to write the response)
   
--We have all identified but we don't know the challenge-response algorithm used. So, I started a bruteforce with many algorithms and all the passwords... HMAC, PBKDF1, PBKDF2, AES, DES, SHA1, MD5, SHA256 with many variants, using hashes to derivate a key from the password... nothing worked, always "Authentication failed"
+- We have all identified but we don't know the challenge-response algorithm used. So, I started a bruteforce with many algorithms and all the passwords... HMAC, PBKDF1, PBKDF2, AES, DES, SHA1, MD5, SHA256 with many variants, using hashes to derivate a key from the password... nothing worked, always "Authentication failed"
   
   
 ### Fixed version and new hints
@@ -137,15 +137,15 @@ Sending Password: D7657D436FDF6464EDBB295368395FE2
 ```
 ...
 Challenge: DFD2E2082DAB9836CEC9EE6560D544E5 (fobadministrator)
-Sending Password: 53364A871DD5BC24CE7C6962671D0114								Authentication failed -> Test mode activated
+Sending Password: 53364A871DD5BC24CE7C6962671D0114                Authentication failed -> Test mode activated
 Challenge: 27CD83D54A384FC2CEF63A2403CFF9B4 (caradministrator)
 Sending Password: A0FE038F79EDDD601085D5C35AB6DF6E								
 Challenge: 00000000000000000000000000000000 (gasadministrator)
-Sending Password: F0FC8C0999661DB19B8ECEAB94BCD9BE								Authentication failed -> Test mode activated
+Sending Password: F0FC8C0999661DB19B8ECEAB94BCD9BE                Authentication failed -> Test mode activated
 Challenge: 60D5297437DA1F9B8B9364B697258D47 (aesadministrator)
-Sending Password: FFFDA5F875597715D408D5B1245F33C3								Authentication failed -> Test mode activated
+Sending Password: FFFDA5F875597715D408D5B1245F33C3                Authentication failed -> Test mode activated
 Challenge: 4A8196235A88F1F97E3FC7C76E4E9635 (desadministrator)
-Sending Password: D7657D436FDF6464EDBB295368395FE2								Authentication failed -> Test mode activated
+Sending Password: D7657D436FDF6464EDBB295368395FE2                Authentication failed -> Test mode activated
 ...
 ```
 - Trying more times we have always the same result. After send the password of "caradminsitrator" we haven't the message "Authentication failed". What's happening? 
@@ -169,7 +169,7 @@ Challenge: 91EDB212E67D975631D852C514384016 (caradministrator)
 Sending Password: FD86DD345F2AC601EF4C603DFCFF4447
 Result: 0000000000000000000000000000000000000008FD86DD345F2AC601EF4C603DFCFF444700000000000000000000000059C333AA3723128DA8CF63EFC74E1230
 ```
-- The flag is: 59C333AA3723128DA8CF63EFC74E1230
+- The correct flag is: 59C333AA3723128DA8CF63EFC74E1230 so finally it was a AES Encrypt with key **caradminsitrator** written at position 160.
  
 ### Script
 I prepared [this script](KeyFobBackdoor.ino) to communicate the PC with the scan chain. I invented a simple protocol to send and read from scan chain
