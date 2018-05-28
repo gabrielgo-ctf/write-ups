@@ -2,7 +2,7 @@
 Hmm, when registering your serial number on the website, you saw that there is also an 'upgraded' version of the infotainment center available with better options for everything! And better yet, apparently the only difference between the two systems is that the upgrade has some kind of wiring harness that needs to be connected to enable the extra functionality. Maybe we can rig up something ourselves in order to unlock this functionality?
 
 ## Write-up
-Another phonic challenge... when we connect the speaker or headphones to D7(or D8) and GND, we hear the same kind of low quality audio of phonic frenzy 1. But this time we haven't the flag, we have a long message saying some errors. I couldn't understand many of the error messages but I can record it. The waveform in the Audacity is this:
+Another phonic challenge... when we connect the speaker or headphones to D7(or D8) and GND, we hear the same kind of low quality audio of phonic frenzy 1. But this time we haven't the flag, we have a long message saying some errors. I couldn't understand many of the error messages but I could record it. The waveform in the Audacity is this:
 ![nothing](nothing.jpg)
 
 We need to do the wiring harness, so the first step is determine what pins of the board are input and outputs...
@@ -72,7 +72,7 @@ A1 <-> D4
 A4 <-> D10
 A5 <-> D5
 ``` 
-Here are some waveforms of the process, the last is the flag
+Here are some waveforms of the process. The last is the flag
 ![Flag](Flag.jpg)
 
 The serial output changed to
