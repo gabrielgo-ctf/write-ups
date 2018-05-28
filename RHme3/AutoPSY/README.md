@@ -244,7 +244,7 @@ MCP.........AT......PIN Board
 26 SCK  -  AT17  -  no
 1  CS   -  AT14  -  D9
 ```
-- I connected the Arduino to D10(SI), D9(CS) and I touched with another wire the AT pin 17 (SCK). With the arduino I inserted the SPI messages and I enabled ID 07D3. After this we can do login and read the service A0
+- I connected the Arduino to D10(SI), D9(CS) and I touched with another wire the AT pin 17 (SCK), also I connected a pin to the RST of the board to control it. With the arduino I inserted the SPI messages and I enabled ID 07D3. After this we can do login and read the service A0
 ```
 ID: 0x7DB  DLC: 8  Data: 10 23 E0 00 46 4C 41 47
 ID: 0x7DB  DLC: 8  Data: 21 3A 00 26 5F 25 5E 50
